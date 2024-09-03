@@ -31,8 +31,11 @@ The complete SUSE Manager API reference is available at: https://documentation.s
 * **list_locked.py**: returns a list of systems marked as "locked"
 * **list_needsreboot.py**: returns a list of systems that currently need rebooting.
 * **lookup_systemid.py**: looks up a hostname and returns the corresponding registered System ID.
+* **migrate_system.py**: does a complete system migration from one service pack to the other (interactive)
 * **packagesinstalled90days.py**: returns a list of all package actions that happened over the last 90 days, with status.
 * **rebootsystem.py**: schedules a reboot for a system.
 * **runscript_sm.py**: takes a list of hosts and a bash script, and schedules actions for every one of them. Use getresults_sm.py to fetch the results.
+* **updateallpackages.py**: installs all pending updates for a system
 * **update_custominfo.py**: sets a custominfo key/value pair for a specific system.
 
+The **migrate_system.py** was inspired by the pull request at https://github.com/uyuni-project/uyuni-docs/issues/3033, but I made it more interactive, with no hardcoded values.
