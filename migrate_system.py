@@ -23,9 +23,10 @@ def main(argv):
     MANAGER_USER = "infobot"
     MANAGER_PASS = "infobot321"
     MANAGER_URL = "http://susemanager.suselab.localdomain/rpc/api"
+    dry_run = True
 
     try:                                
-        opts, args = getopt.getopt(argv, "hu:p:s:u:W", ["help", "user=", "password=", "systemid=", "url=", "ask"])
+        opts, args = getopt.getopt(argv, "hu:p:s:u:Wy", ["help", "user=", "password=", "systemid=", "url=", "ask", "yes"])
     except getopt.GetoptError:           
         usage()                          
         sys.exit(2)
@@ -43,7 +44,9 @@ def main(argv):
         elif opt in ("-L", "--url"): 
             MANAGER_URL = arg
         elif opt in ("-s", "--systemid"): 
-            hostname = arg               
+            hostname = arg   
+        elif opt in ("-y", "--yes"): 
+            dry_run = False            
 
     session_key = None
     with xmlrpc.client.ServerProxy(MANAGER_URL) as proxy:
@@ -62,7 +65,7 @@ def main(argv):
             count=0
             print("Available migration options:")
             for item in migration_data:
-                print(f"[{count}] {item['friendly']}")
+                print(f"{count} - {item['friendly']}")
                 count+=1
 
             if count==0:
@@ -72,6 +75,7 @@ def main(argv):
             try:
                 answer = input("Select an option: ")
                 identlist=migration_data[int(answer)]['ident']
+                friendly=migration_data[int(answer)]['friendly']
             except ValueError as e:
                 print("Invalid answer. Numbers only!")
                 exit(1)
@@ -94,18 +98,22 @@ def main(argv):
                 print("Invalid answer. Numbers only!")
                 exit(1)
 
-            print(f"selected products: {identlist} (base channel: {base})")
-            answer = input("Is this correct? Continue: y/n ")
+            print(f"\n\ndestination product: {friendly}")
+            print(f"selected products: {identlist}")
+            print(f"base channel: {base})")
+            print(f"--> DRY RUN is {str(dry_run)} (use --yes to do a real migration)\n\n")
+            answer = input("Is this correct? y/n ")
             print(answer)
             if answer.lower() == "y":
-                print("Yes, starting migration now...")
+                print(f"Starting migration now...")
                 now = datetime.now()
-                jobid=proxy.system.scheduleProductMigration(session_key, system_id, identlist , base ,[],True,True,True, now)
+
+                jobid=proxy.system.scheduleProductMigration(session_key, system_id, identlist , base, [], dry_run, True, True, now)
+                print(f"---> Job ID: {jobid}")
+                print(f"*** Use the command './get_eventdetails.py {system_id} {jobid}' to fetch the execution results for the update.")
             elif answer.lower() == "n":
                 print("No, quitting now...")
-                
-            print(f"---> Job ID: {jobid}")
-            print(f"*** Use the command './get_eventdetails.py {system_id} {jobid}' to fetch the execution results for the update.")
+        
             if (session_key) is not None:
                 proxy.auth.logout(session_key)
         except ConnectionRefusedError as e:
