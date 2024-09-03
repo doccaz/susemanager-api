@@ -33,7 +33,8 @@ def main():
             print(f"Date scheduled: {event['earliest_action']}")
             print(f"Date created: {event['created']}")
             print(f"Date picked up: {event['picked_up']}")
-            print(f"Result: {event['result_msg']} (RC={event['result_code']})")
+            if 'result_msg' in event.keys():
+                print(f"Result: {event['result_msg']} (RC={event['result_code']})")
             print(f"Status: {event['status']}")
 
             if (session_key) is not None:
