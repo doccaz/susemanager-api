@@ -39,3 +39,13 @@ The complete SUSE Manager API reference is available at: https://documentation.s
 * **update_custominfo.py**: sets a custominfo key/value pair for a specific system.
 
 The **migrate_system.py** was inspired by the pull request at https://github.com/uyuni-project/uyuni-docs/issues/3033, but I made it more interactive, with no hardcoded values.
+
+
+## curl scripts
+
+By demand, I'm posting the curl-equivalent scripts. Note that you need the *header.txt* file present in the same directory, as they're reading from this file. 
+I'm using the curl "cookie jar" feature to store/read the cookies/session ID tokens. You'll see a "cookies.txt" file being created after running any of these. The authentication token is removed at the end after the logout operation is performed on each script.
+
+* **curl_getSystemCurrencyScores.sh**: does the same as list_allsystems.py script, which is to list all available systems, but with the corresponding patches/bugfixes counts/scores.
+* **curl_getId.sh**: looks up a hostname and returns the corresponding System ID.
+* **curl_listsystems.sh**: returns basic data from all available systems (name, id, last checkin, etc)
