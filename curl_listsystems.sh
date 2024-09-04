@@ -4,31 +4,31 @@ API="https://susemanager.suselab.localdomain/rhn/manager/api"
 POSTDATA='{"login": "infobot", "password": "infobot321"}'
 CMD="curl -LSks -c cookies.txt -b cookies.txt -H @headers.txt"
 
-# faz o login
+# do the login
 $CMD -d "${POSTDATA}" ${API}/auth/login
 if [ $? -eq 0 ]; then
 	echo
-	echo "autenticado com sucesso"
+	echo "authenticated successfully"
 	echo
 
-	# executamos o comando...
+	# execute the command...
 	OUTPUT=$($CMD ${API}/system/listSystems)
 
-	# fazemos o logout
-	# o POST data pode ser vazio, pois ele desloga usando os cookies
+	# do the logout
+	# the POST data here can be empty, as it uses cookie data
 	$CMD -d "" ${API}/auth/logout
 	if [ $? -eq 0 ]; then
 		echo
-		echo "logout com sucesso"
+		echo "logged out"
 		echo
 	else
-		echo "erro no logout"
+		echo "error logging out"
 		exit 1
 	fi
 else
-	echo "erro ao autenticar"
+	echo "error authenticating"
 	exit 1
 fi
 
 
-echo "saida: $OUTPUT"
+echo "result: $OUTPUT"
