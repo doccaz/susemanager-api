@@ -6,7 +6,7 @@ from datetime import datetime
 import pdb
 MANAGER_USER = "infobot"
 MANAGER_PASS = "infobot321"
-MANAGER_URL = "http://susemanager.suselab.localdomain/rpc/api"
+MANAGER_URL = "http://smlm-1.suselab.localdomain/rpc/api"
 
 def main():
     hostname = getfqdn()
@@ -34,7 +34,10 @@ def main():
                         if 'additional_info' in p.keys():
                             for pkg in p['additional_info']:
                                 package_list.append(pkg['detail'])
-                            print(f"{s['id']},{details['profile_name']},{network['hostname']},{network['ip']},{p['id']},{p['earliest_action']},{p['pickup_date']},{p['completed_date']},{result},{p['action_type']},{';'.join(package_list)},{p['modified_date']}")        
+                                if 'pickup_date' in p.keys():
+                                    print(f"{s['id']},{details['profile_name']},{network['hostname']},{network['ip']},{p['id']},{p['earliest_action']},{p['pickup_date']},{p['completed_date']},{result},{p['action_type']},{';'.join(package_list)},{p['modified_date']}")        
+                                else:
+                                    print(f"{s['id']},{details['profile_name']},{network['hostname']},{network['ip']},{p['id']},{p['earliest_action']},{p['completed_date']},{result},{p['action_type']},{';'.join(package_list)},{p['modified_date']}")        
                 
             if (session_key) is not None:
                 proxy.auth.logout(session_key)
