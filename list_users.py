@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SUSE Manager / Uyuni API - List Software Channels
+SUSE Manager / Uyuni API - List Users
 """
 import argparse, xmlrpc.client, ssl, getpass, sys
 
@@ -9,7 +9,7 @@ def main():
     p.add_argument('-s', '--server'); p.add_argument('--url'); p.add_argument('-u', '--user', required=True)
     p.add_argument('-p', '--password'); p.add_argument('--verify', action='store_true')
     args = p.parse_args()
-
+    
     if args.url: api_url = args.url
     elif args.server: api_url = f"https://{args.server}/rpc/api"
     else: print("[!] Error: Provide -s/--server or --url"); sys.exit(1)
@@ -19,10 +19,23 @@ def main():
     if not args.verify: ctx.check_hostname=False; ctx.verify_mode=ssl.CERT_NONE
 
     try:
-        c = xmlrpc.client.ServerProxy(api_url, context=ctx); k = c.auth.login(args.user, pwd)
-        print(f"{'Label':<40} | {'Name'}")
-        for x in c.channel.listAllChannels(k): print(f"{x.get('label'):<40} | {x.get('name')}")
+        c = xmlrpc.client.ServerProxy(api_url, context=ctx)
+        k = c.auth.login(args.user, pwd)
+        print(f"{'Username':<20} | {'Email'}")
+        print("-" * 60)
+        
+        for u in c.user.listUsers(k):
+            login = u.get('login')
+            # Safe fetch for email
+            email = u.get('email')
+            if not email:
+                try: 
+                    # Individual fetch to ensure data
+                    details = c.user.getDetails(k, login)
+                    email = details.get('email', 'N/A')
+                except: email = "N/A"
+            print(f"{login:<20} | {email}")
         c.auth.logout(k)
-    except Exception as e: print(e)
+    except Exception as e: print(f"Error: {e}")
 
 if __name__ == "__main__": main()

@@ -5,7 +5,7 @@ from socket import getfqdn
 import pdb
 MANAGER_USER = "infobot"
 MANAGER_PASS = "infobot321"
-MANAGER_URL = "http://susemanager.suselab.localdomain/rpc/api"
+MANAGER_URL = "http://smlm-1.suselab.localdomain/rpc/api"
 
 def main():
     hostname = getfqdn()
@@ -15,7 +15,7 @@ def main():
             session_key = proxy.auth.login(MANAGER_USER, MANAGER_PASS)
             score_data=proxy.system.getSystemCurrencyScores(session_key)
             print(f'"system name","system ID","critical patches","important patches","moderate patches","low priority patches","bugfixes","enhancement patches","system currency score"')
-            for s in proxy.system.listSystems(session_key):
+            for s in proxy.system.listActiveSystems(session_key):
                 for score in score_data:
                     if s['id'] == score['sid']:
                         # {'score': 784, 'mod': 30, 'crit': 0, 'low': 5, 'bug': 116, 'imp': 18, 'enh': 4, 'sid': 1000010022}
@@ -26,4 +26,3 @@ def main():
             print(f'Connection error: {e}')
 
 main()
-

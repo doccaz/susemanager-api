@@ -1,44 +1,31 @@
-#!/usr/bin/python3
-import xmlrpc.client
-from socket import getfqdn
-from datetime import datetime,timedelta
-import pdb
-MANAGER_USER = "infobot"
-MANAGER_PASS = "infobot321"
-MANAGER_URL = "http://susemanager.suselab.localdomain/rpc/api"
-
+#!/usr/bin/env python3
+"""
+SUSE Manager / Uyuni API - Get ALL Event History
+"""
+import argparse, xmlrpc.client, ssl, getpass, sys
 
 def main():
-    session_key = None
+    p = argparse.ArgumentParser()
+    p.add_argument('-s', '--server'); p.add_argument('--url'); p.add_argument('-u', '--user', required=True)
+    p.add_argument('-p', '--password'); p.add_argument('--limit', type=int, default=5)
+    p.add_argument('--verify', action='store_true')
+    args = p.parse_args()
 
-    with xmlrpc.client.ServerProxy(MANAGER_URL) as proxy:
-        try:
-            session_key = proxy.auth.login(MANAGER_USER, MANAGER_PASS)
-            event_data= {}
+    if args.url: api_url = args.url
+    elif args.server: api_url = f"https://{args.server}/rpc/api"
+    else: print("[!] Error: Provide -s/--server or --url"); sys.exit(1)
 
-            for s in proxy.system.listSystems(session_key):
-                if s['id'] not in event_data.keys():
-                    event_data[s['id']] = []
-                event_data[s['id']] += proxy.system.getEventHistory(session_key, s['id'])
-                # print(event_data[s['id']])
-            for system in event_data.keys():
-                print(f"Events for system ID {system}")
-                for event in event_data[system]:
-                    print(f"\tSummary: {event['summary']}")
-                    print(f"\tDetails: {event['details']}")
-                    if 'completed' in event.keys():
-                        print(f"\tDate completed: {event['completed']}")
-                    else:
-                        print(f"\tDate completed: <not completed>")
-                    print()
+    pwd = args.password or getpass.getpass()
+    ctx = ssl.create_default_context()
+    if not args.verify: ctx.check_hostname=False; ctx.verify_mode=ssl.CERT_NONE
 
-            if (session_key) is not None:
-                proxy.auth.logout(session_key)
-        except ConnectionRefusedError as e:
-            print(f'Connection error: {e}')
-        except ValueError as e:
-            print(f'System ID can only be numeric!')
-        except xmlrpc.client.Fault as e:
-            print(f'Error submitting job: {e}')
-main()
+    try:
+        c = xmlrpc.client.ServerProxy(api_url, context=ctx); k = c.auth.login(args.user, pwd)
+        for s in c.system.listSystems(k):
+            print(f"\n--- {s['name']} ---")
+            for e in c.system.listSystemEvents(k, s['id'])[:args.limit]:
+                print(f"{e.get('type')} | {e.get('created')}")
+        c.auth.logout(k)
+    except Exception as e: print(e)
 
+if __name__ == "__main__": main()
