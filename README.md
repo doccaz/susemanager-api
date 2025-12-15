@@ -7,13 +7,20 @@ I get asked about how to use the API quite frequently, so I decided to make a fe
 
 ## General usage instructions
 
-Most of the scripts here have the URL to the SUMA server hardcoded in the first lines. Please change that before using.
+The older scripts with the URL to the SUMA server hardcoded in the first lines were moved to the "classic" folder. Please change that before using.
+
+All scripts now have standardized parameters for specifying the server name (-s), user (-u), password (-p) and URL (--url). If you just specify the server name, it'll assume the default URL always (https://<servername>/api/rpc).
+
+By default the CA verification will be disabled, but you can force it with "--verify".
+
+All scripts have a -h/--help parameter.
+
 Most of the actions will require a regular SUMA user that's at least capable of reading information (Read-only user). 
 The runscripts_sm script requires an admin user, as it is indeed creating/scheduling jobs.
 
-These scripts are meant to make it easy to customize SUSE Manager to your environment, and mainly so you can learn how to do it.
+These scripts are meant to make it easy to customize SUSE Multi-Linux Manager/Uyuni to your environment, and mainly so you can learn how to do it.
 
-The complete SUSE Manager API reference is available at: https://documentation.suse.com/suma/5.0/api/suse-manager/index.html
+The complete SUSE Multi-Linux Manager API reference is available at: https://documentation.suse.com/suma/5.1/api/suse-manager/index.html
 
 ## Currently available scripts
 
