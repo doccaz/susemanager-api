@@ -24,16 +24,13 @@ def main():
         print(f"{'Username':<20} | {'Email'}")
         print("-" * 60)
         
+        # Fetch list then details to ensure email presence
         for u in c.user.listUsers(k):
             login = u.get('login')
-            # Safe fetch for email
-            email = u.get('email')
-            if not email:
-                try: 
-                    # Individual fetch to ensure data
-                    details = c.user.getDetails(k, login)
-                    email = details.get('email', 'N/A')
-                except: email = "N/A"
+            try: 
+                details = c.user.getDetails(k, login)
+                email = details.get('email', 'N/A')
+            except: email = "N/A"
             print(f"{login:<20} | {email}")
         c.auth.logout(k)
     except Exception as e: print(f"Error: {e}")
