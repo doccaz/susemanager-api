@@ -2545,7 +2545,7 @@
               }
             ]
           },
-          "unit": "d"
+          "unit": "suffix: days"
         },
         "overrides": []
       },
