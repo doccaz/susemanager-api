@@ -106,7 +106,7 @@
           {
             "datasource": {
               "type": "grafana-postgresql-datasource",
-              "uid": "aef14g606baioa"
+              "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING-FOR-LIBRARY-PANEL}"
             },
             "editorMode": "builder",
             "format": "table",
