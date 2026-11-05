@@ -3087,46 +3087,46 @@
         "type": "textbox"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "Lab",
-          "value": "Lab"
+        "current": {},
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
         },
-        "description": "System Group name to display members.",
+        "definition": "SELECT DISTINCT name FROM systemgroup ORDER BY 1",
+        "description": "System Group whose members are listed.",
         "hide": 0,
+        "includeAll": false,
         "label": "System Group",
+        "multi": false,
         "name": "group_search",
-        "options": [
-          {
-            "selected": true,
-            "text": "Lab",
-            "value": "Lab"
-          }
-        ],
-        "query": "Lab",
+        "options": [],
+        "query": "SELECT DISTINCT name FROM systemgroup ORDER BY 1",
+        "refresh": 1,
+        "regex": "",
         "skipUrlSync": false,
-        "type": "textbox"
+        "sort": 1,
+        "type": "query"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "195",
-          "value": "195"
+        "current": {},
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
         },
-        "description": "Enter an event action ID to see the progress of execution.",
+        "definition": "SELECT action_id FROM actionsreport ORDER BY action_id DESC LIMIT 100",
+        "description": "Scheduled action to show progress for (latest 100, newest first).",
         "hide": 0,
+        "includeAll": false,
         "label": "Action ID",
+        "multi": false,
         "name": "action_id",
-        "options": [
-          {
-            "selected": true,
-            "text": "195",
-            "value": "195"
-          }
-        ],
-        "query": "1",
+        "options": [],
+        "query": "SELECT action_id FROM actionsreport ORDER BY action_id DESC LIMIT 100",
+        "refresh": 1,
+        "regex": "",
         "skipUrlSync": false,
-        "type": "textbox"
+        "sort": 0,
+        "type": "query"
       },
       {
         "current": {},
