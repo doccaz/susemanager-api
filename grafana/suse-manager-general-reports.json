@@ -2108,7 +2108,7 @@
         "type": "grafana-postgresql-datasource",
         "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
       },
-      "description": "",
+      "description": "Pending security advisories rated Critical, per system. Severity comes from the Errata table (Critical/Important/Moderate/Low).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2135,44 +2135,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "errata_id"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 79
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "hostname"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 246
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "advisory_type"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 214
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 11,
@@ -2202,115 +2165,11 @@
             "type": "grafana-postgresql-datasource",
             "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
           },
-          "editorMode": "builder",
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT hostname, errata_id, advisory_type, advisory_name FROM systemerrata WHERE advisory_type LIKE '%Security%' GROUP BY hostname, advisory_type, errata_id, advisory_name ORDER BY hostname ",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [
-                  {
-                    "name": "hostname",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "parameters": [
-                  {
-                    "name": "errata_id",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "parameters": [
-                  {
-                    "name": "advisory_type",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "parameters": [
-                  {
-                    "name": "advisory_name",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "name": "hostname",
-                  "type": "string"
-                },
-                "type": "groupBy"
-              },
-              {
-                "property": {
-                  "name": "advisory_type",
-                  "type": "string"
-                },
-                "type": "groupBy"
-              },
-              {
-                "property": {
-                  "name": "errata_id",
-                  "type": "string"
-                },
-                "type": "groupBy"
-              },
-              {
-                "property": {
-                  "name": "advisory_name",
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "orderBy": {
-              "property": {
-                "name": [
-                  "hostname"
-                ],
-                "type": "string"
-              },
-              "type": "property"
-            },
-            "whereJsonTree": {
-              "children1": [
-                {
-                  "id": "9bbab8ab-4567-489a-bcde-f1956c47d6e9",
-                  "properties": {
-                    "field": "advisory_type",
-                    "fieldSrc": "field",
-                    "operator": "like",
-                    "value": [
-                      "Security"
-                    ],
-                    "valueSrc": [
-                      "value"
-                    ],
-                    "valueType": [
-                      "text"
-                    ]
-                  },
-                  "type": "rule"
-                }
-              ],
-              "id": "baa9aa9b-0123-4456-b89a-b1956c3f4b5a",
-              "type": "group"
-            },
-            "whereString": "advisory_type LIKE '%Security%'"
-          },
-          "table": "systemerrata"
+          "rawQuery": true,
+          "rawSql": "SELECT se.hostname, e.advisory_name, e.severity, e.synopsis, e.issue_date\nFROM systemerrata se\nJOIN errata e ON e.mgm_id = se.mgm_id AND e.errata_id = se.errata_id\nWHERE e.advisory_type ILIKE '%Security%' AND e.severity = 'Critical'\nORDER BY se.hostname, e.advisory_name",
+          "refId": "A"
         }
       ],
       "title": "Critical Security Patches",
