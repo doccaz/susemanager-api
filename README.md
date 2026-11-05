@@ -75,3 +75,7 @@ I'm using the curl "cookie jar" feature to store/read the cookies/session ID tok
 * **curl_getSystemCurrencyScores.sh**: does the same as list_allsystems.py script, which is to list all available systems, but with the corresponding patches/bugfixes counts/scores.
 * **curl_getId.sh**: looks up a hostname and returns the corresponding System ID.
 * **curl_listsystems.sh**: returns basic data from all available systems (name, id, last checkin, etc)
+
+## Grafana dashboard
+
+* **grafana/suse-manager-general-reports.json**: source of the [SUSE Manager General Reports](https://grafana.com/grafana/dashboards/23039-suse-manager-general-reports/) dashboard. Unlike the scripts, it doesn't use the API: it reads SUSE Multi-Linux Manager's reporting database (`reportdb`) through a Grafana PostgreSQL data source, chosen at import time. It covers package/action activity, scheduled action progress, inventory, and a "Security by System Group" row (pending security patches per group by severity, patch age, oldest first), the dashboard counterpart of **list_group_vulnerabilities.py**. The reporting database is refreshed by Taskomatic (daily by default), so the data can be up to a day old; the "Reporting DB synced" tile shows when it was last refreshed.
