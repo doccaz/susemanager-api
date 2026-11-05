@@ -5,6 +5,8 @@ These scripts all use the SUSE Manager API to do common tasks and extract inform
 
 I get asked about how to use the API quite frequently, so I decided to make a few working examples (based on scripts I wrote waaaay back in 2014 -- I'm getting old!) and share them with the world.
 
+> **Prefer dashboards?** There's also a Grafana dashboard with inventory, action and per-group security reports, built on SUSE Multi-Linux Manager's reporting database. See the [Grafana dashboard page](grafana/README.md) for screenshots, setup and how to test it locally.
+
 ## General usage instructions
 
 The older scripts with the URL to the SUMA server hardcoded in the first lines were moved to the "classic" folder. Please change that before using.
@@ -79,3 +81,5 @@ I'm using the curl "cookie jar" feature to store/read the cookies/session ID tok
 ## Grafana dashboard
 
 * **grafana/suse-manager-general-reports.json**: source of the [SUSE Manager General Reports](https://grafana.com/grafana/dashboards/23039-suse-manager-general-reports/) dashboard. Unlike the scripts, it doesn't use the API: it reads SUSE Multi-Linux Manager's reporting database (`reportdb`) through a Grafana PostgreSQL data source, chosen at import time. It covers package/action activity, scheduled action progress, inventory, and a "Security by System Group" row (pending security patches per group by severity, patch age, oldest first), the dashboard counterpart of **list_group_vulnerabilities.py**. The reporting database is refreshed by Taskomatic (daily by default), so the data can be up to a day old; the "Reporting DB synced" tile shows when it was last refreshed.
+
+See **[grafana/README.md](grafana/README.md)** for screenshots, how to configure Grafana to read the reporting database, and how to test it locally.
