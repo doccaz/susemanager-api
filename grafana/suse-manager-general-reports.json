@@ -2353,6 +2353,712 @@
       ],
       "title": "Outdated Systems",
       "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 92
+      },
+      "id": 18,
+      "panels": [],
+      "title": "Security by System Group ($group)",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+      },
+      "description": "Distinct Critical security advisories pending on at least one system in the selected groups.",
+      "id": 19,
+      "title": "Critical security patches pending",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 93
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        }
+      },
+      "pluginVersion": "10.4.15",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(DISTINCT e.errata_id) AS \"Critical patches\"\nFROM systemgroupmember g\nJOIN systemerrata se ON se.mgm_id = g.mgm_id AND se.system_id = g.system_id\nJOIN errata e ON e.mgm_id = se.mgm_id AND e.errata_id = se.errata_id\nWHERE g.group_name IN ($group) AND e.advisory_type ILIKE '%Security%' AND e.severity = 'Critical'",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+      },
+      "description": "Systems in the selected groups with at least one Critical security advisory pending.",
+      "id": 20,
+      "title": "Systems with critical patches",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 93
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        }
+      },
+      "pluginVersion": "10.4.15",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(DISTINCT se.system_id) AS \"Systems with critical patches\"\nFROM systemgroupmember g\nJOIN systemerrata se ON se.mgm_id = g.mgm_id AND se.system_id = g.system_id\nJOIN errata e ON e.mgm_id = se.mgm_id AND e.errata_id = se.errata_id\nWHERE g.group_name IN ($group) AND e.advisory_type ILIKE '%Security%' AND e.severity = 'Critical'",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+      },
+      "description": "Days since the oldest pending Critical security advisory was issued.",
+      "id": 21,
+      "title": "Oldest pending critical patch",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 93
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 31
+              },
+              {
+                "color": "orange",
+                "value": 61
+              },
+              {
+                "color": "red",
+                "value": 91
+              }
+            ]
+          },
+          "unit": "d"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        }
+      },
+      "pluginVersion": "10.4.15",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT MAX(EXTRACT(day FROM now() - e.issue_date)::int) AS \"Oldest critical (days)\"\nFROM systemgroupmember g\nJOIN systemerrata se ON se.mgm_id = g.mgm_id AND se.system_id = g.system_id\nJOIN errata e ON e.mgm_id = se.mgm_id AND e.errata_id = se.errata_id\nWHERE g.group_name IN ($group) AND e.advisory_type ILIKE '%Security%' AND e.severity = 'Critical'",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+      },
+      "description": "When the reporting database was last refreshed (Taskomatic 'update-reporting-default' job, daily by default). Everything on this dashboard is as of this time.",
+      "id": 22,
+      "title": "Reporting DB synced",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 93
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "dateTimeFromNow"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        }
+      },
+      "pluginVersion": "10.4.15",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT MAX(synced_date) AS \"Data synced\" FROM system",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+      },
+      "description": "Distinct pending security advisories per system group, by severity. A system in several groups is counted in each. 'Unrated' are security advisories with no severity (common for non-SUSE distros).",
+      "id": 23,
+      "title": "Pending security patches per group",
+      "type": "table",
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 97
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Critical"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Systems w/ Critical"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Oldest Critical (days)"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 31
+                    },
+                    {
+                      "color": "orange",
+                      "value": 61
+                    },
+                    {
+                      "color": "red",
+                      "value": 91
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "sortBy": [],
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        }
+      },
+      "pluginVersion": "10.4.15",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT g.group_name AS \"Group\",\n  COUNT(DISTINCT g.system_id) AS \"Systems\",\n  COUNT(DISTINCT e.errata_id) FILTER (WHERE e.severity = 'Critical')  AS \"Critical\",\n  COUNT(DISTINCT e.errata_id) FILTER (WHERE e.severity = 'Important') AS \"Important\",\n  COUNT(DISTINCT e.errata_id) FILTER (WHERE e.severity = 'Moderate')  AS \"Moderate\",\n  COUNT(DISTINCT e.errata_id) FILTER (WHERE e.severity = 'Low')       AS \"Low\",\n  COUNT(DISTINCT e.errata_id) FILTER (WHERE e.errata_id IS NOT NULL AND e.severity IS NULL) AS \"Unrated\",\n  COUNT(DISTINCT se.system_id) FILTER (WHERE e.severity = 'Critical') AS \"Systems w/ Critical\",\n  MAX(EXTRACT(day FROM now() - e.issue_date)::int) FILTER (WHERE e.severity = 'Critical') AS \"Oldest Critical (days)\"\nFROM systemgroupmember g\nLEFT JOIN systemerrata se ON se.mgm_id = g.mgm_id AND se.system_id = g.system_id\nLEFT JOIN errata e ON e.mgm_id = se.mgm_id AND e.errata_id = se.errata_id AND e.advisory_type ILIKE '%Security%'\nWHERE g.group_name IN ($group)\nGROUP BY g.group_name\nORDER BY \"Critical\" DESC, \"Important\" DESC, \"Group\"",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+      },
+      "description": "Distinct pending security advisories of the selected severities, by days since issue date.",
+      "id": 24,
+      "title": "Pending security patch age per group ($severity)",
+      "type": "table",
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 106
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "61-90 days"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Over 90 days"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "sortBy": [],
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        }
+      },
+      "pluginVersion": "10.4.15",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT g.group_name AS \"Group\",\n  COUNT(DISTINCT e.errata_id) FILTER (WHERE EXTRACT(day FROM now() - e.issue_date)::int <= 30) AS \"0-30 days\",\n  COUNT(DISTINCT e.errata_id) FILTER (WHERE EXTRACT(day FROM now() - e.issue_date)::int BETWEEN 31 AND 60) AS \"31-60 days\",\n  COUNT(DISTINCT e.errata_id) FILTER (WHERE EXTRACT(day FROM now() - e.issue_date)::int BETWEEN 61 AND 90) AS \"61-90 days\",\n  COUNT(DISTINCT e.errata_id) FILTER (WHERE EXTRACT(day FROM now() - e.issue_date)::int > 90) AS \"Over 90 days\",\n  COUNT(DISTINCT e.errata_id) FILTER (WHERE e.issue_date IS NULL) AS \"No issue date\"\nFROM systemgroupmember g\nJOIN systemerrata se ON se.mgm_id = g.mgm_id AND se.system_id = g.system_id\nJOIN errata e ON e.mgm_id = se.mgm_id AND e.errata_id = se.errata_id\nWHERE g.group_name IN ($group) AND e.advisory_type ILIKE '%Security%' AND e.severity IN ($severity)\nGROUP BY g.group_name\nORDER BY \"Over 90 days\" DESC, \"Group\"",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+      },
+      "description": "Each pending security advisory of the selected severities, per group, with how many of the group's systems need it.",
+      "id": 25,
+      "title": "Pending security patches ($severity), oldest first",
+      "type": "table",
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 113
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Days pending"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 31
+                    },
+                    {
+                      "color": "orange",
+                      "value": 61
+                    },
+                    {
+                      "color": "red",
+                      "value": 91
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "sortBy": [],
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        }
+      },
+      "pluginVersion": "10.4.15",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT g.group_name AS \"Group\", e.advisory_name AS \"Advisory\", e.severity AS \"Severity\",\n  COUNT(DISTINCT se.system_id) AS \"Systems\", e.issue_date AS \"Issued\",\n  EXTRACT(day FROM now() - e.issue_date)::int AS \"Days pending\", e.reboot_required AS \"Reboot\",\n  e.synopsis AS \"Synopsis\", e.cve AS \"CVEs\"\nFROM systemgroupmember g\nJOIN systemerrata se ON se.mgm_id = g.mgm_id AND se.system_id = g.system_id\nJOIN errata e ON e.mgm_id = se.mgm_id AND e.errata_id = se.errata_id\nWHERE g.group_name IN ($group) AND e.advisory_type ILIKE '%Security%' AND e.severity IN ($severity)\nGROUP BY g.group_name, e.mgm_id, e.errata_id, e.advisory_name, e.severity,\n  e.issue_date, e.reboot_required, e.synopsis, e.cve\nORDER BY \"Days pending\" DESC NULLS LAST, \"Systems\" DESC",
+          "refId": "A"
+        }
+      ]
     }
   ],
   "schemaVersion": 39,
@@ -2421,6 +3127,71 @@
         "query": "1",
         "skipUrlSync": false,
         "type": "textbox"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "${DS_SUMA-50-SERVER.SUSE.LAB-REPORTING}"
+        },
+        "definition": "SELECT DISTINCT name FROM systemgroup ORDER BY 1",
+        "description": "System groups for the security panels.",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Groups",
+        "multi": true,
+        "name": "group",
+        "options": [],
+        "query": "SELECT DISTINCT name FROM systemgroup ORDER BY 1",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "Critical",
+            "Important"
+          ],
+          "value": [
+            "Critical",
+            "Important"
+          ]
+        },
+        "description": "Severities for the patch age panels.",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Severity",
+        "multi": true,
+        "name": "severity",
+        "options": [
+          {
+            "selected": true,
+            "text": "Critical",
+            "value": "Critical"
+          },
+          {
+            "selected": true,
+            "text": "Important",
+            "value": "Important"
+          },
+          {
+            "selected": false,
+            "text": "Moderate",
+            "value": "Moderate"
+          },
+          {
+            "selected": false,
+            "text": "Low",
+            "value": "Low"
+          }
+        ],
+        "query": "Critical,Important,Moderate,Low",
+        "skipUrlSync": false,
+        "type": "custom"
       }
     ]
   },
